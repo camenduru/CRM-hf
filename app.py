@@ -23,6 +23,17 @@ pipeline = None
 rembg_session = rembg.new_session()
 
 
+def expand_to_square(image, bg_color=(0, 0, 0, 0)):
+    # expand image to 1:1
+    width, height = image.size
+    if width == height:
+        return image
+    new_size = (max(width, height), max(width, height))
+    new_image = Image.new("RGBA", new_size, bg_color)
+    paste_position = ((new_size[0] - width) // 2, (new_size[1] - height) // 2)
+    new_image.paste(image, paste_position)
+    return new_image
+
 def check_input_image(input_image):
     if input_image is None:
         raise gr.Error("No image uploaded!")
@@ -67,13 +78,18 @@ def add_background(image, bg_color=(255, 255, 255)):
     return Image.alpha_composite(background, image)
 
 
-def preprocess_image(input_image, do_remove_background, force_remove, foreground_ratio, backgroud_color):
+def preprocess_image(image, background_choice, foreground_ratio, backgroud_color):
     """
     input image is a pil image in RGBA, return RGB image
     """
-    if do_remove_background:
-        image = remove_background(input_image, rembg_session, force_remove)
+    print(background_choice)
+    if background_choice == "Alpha as mask":
+        background = Image.new("RGBA", image.size, (0, 0, 0, 0))
+        image = Image.alpha_composite(background, image)
+    else:
+        image = remove_background(image, rembg_session, force_remove=True)
     image = do_resize_content(image, foreground_ratio)
+    image = expand_to_square(image)
     image = add_background(image, backgroud_color)
     return image.convert("RGB")
 
@@ -150,8 +166,13 @@ with gr.Blocks() as demo:
             with gr.Row():
                 with gr.Column():
                     with gr.Row():
-                        do_remove_background = gr.Checkbox(label="Remove Background", value=True)
-                        force_remove = gr.Checkbox(label="Force Remove", value=False)
+                        background_choice = gr.Radio([
+                                "Alpha as mask",
+                                "Auto Remove background"
+                            ], value="Alpha as mask",
+                            label="backgroud choice")
+                        # do_remove_background = gr.Checkbox(label=, value=True)
+                        # force_remove = gr.Checkbox(label=, value=False)
                     back_groud_color = gr.ColorPicker(label="Background Color", value="#7F7F7F", interactive=False)
                     foreground_ratio = gr.Slider(
                         label="Foreground Ratio",
@@ -163,9 +184,13 @@ with gr.Blocks() as demo:
 
                 with gr.Column():
                     seed = gr.Number(value=1234, label="seed", precision=0)
-                    guidance_scale = gr.Number(value=5.5, minimum=0, maximum=20, label="guidance_scale")
-                    step = gr.Number(value=50, minimum=1, maximum=100, label="sample steps", precision=0)
+                    guidance_scale = gr.Number(value=5.5, minimum=3, maximum=10, label="guidance_scale")
+                    step = gr.Number(value=50, minimum=30, maximum=100, label="sample steps", precision=0)
             text_button = gr.Button("Generate 3D shape")
+            gr.Examples(
+                examples=[os.path.join("examples", i) for i in os.listdir("examples")],
+                inputs=[image_input],
+            )
         with gr.Column():
             image_output = gr.Image(interactive=False, label="Output RGB image")
             xyz_ouput = gr.Image(interactive=False, label="Output CCM image")
@@ -188,14 +213,11 @@ with gr.Blocks() as demo:
         output_model,
         output_obj,
     ]
-    gr.Examples(
-        examples=[os.path.join("examples", i) for i in os.listdir("examples")],
-        inputs=[image_input],
-    )
+
 
     text_button.click(fn=check_input_image, inputs=[image_input]).success(
         fn=preprocess_image,
-        inputs=[image_input, do_remove_background, force_remove, foreground_ratio, back_groud_color],
+        inputs=[image_input, background_choice, foreground_ratio, back_groud_color],
         outputs=[processed_image],
     ).success(
         fn=gen_image,

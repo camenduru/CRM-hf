@@ -92,7 +92,7 @@ class TwoStagePipeline(object):
         stage1_images.pop(self.stage1_sampler.ref_position)
         return stage1_images
 
-    def stage2_sample(self, pixel_img, stage1_images):
+    def stage2_sample(self, pixel_img, stage1_images, scale=5, step=50):
         if type(pixel_img) == str:
             pixel_img = Image.open(pixel_img)
 
@@ -112,8 +112,8 @@ class TwoStagePipeline(object):
             self.stage2_sampler.sampler,
             pixel_images=stage1_images,
             ip=pixel_img,
-            step=50,
-            scale=5,
+            step=step,
+            scale=scale,
             batch_size=self.stage2_sampler.batch_size,
             ddim_eta=0.0,
             dtype=self.stage2_sampler.dtype,
@@ -134,7 +134,7 @@ class TwoStagePipeline(object):
     def __call__(self, pixel_img, prompt="3D assets", scale=5, step=50):
         pixel_img = do_resize_content(pixel_img, self.resize_rate)
         stage1_images = self.stage1_sample(pixel_img, prompt, scale=scale, step=step)
-        stage2_images = self.stage2_sample(pixel_img, stage1_images)
+        stage2_images = self.stage2_sample(pixel_img, stage1_images, scale=scale, step=step)
 
         return {
             "ref_img": pixel_img,
