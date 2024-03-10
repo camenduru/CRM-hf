@@ -9,6 +9,6 @@ opencv-python-headless==4.9.0.80
 xformers
 omegaconf
 rembg
-nvdiffrast
+git+https://github.com/NVlabs/nvdiffrast
 pygltflib
 kiui
