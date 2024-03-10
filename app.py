@@ -165,7 +165,7 @@ with gr.Blocks() as demo:
                     seed = gr.Number(value=1234, label="seed", precision=0)
                     guidance_scale = gr.Number(value=5.5, minimum=0, maximum=20, label="guidance_scale")
                     step = gr.Number(value=50, minimum=1, maximum=100, label="sample steps", precision=0)
-            text_button = gr.Button("Generate Images")
+            text_button = gr.Button("Generate 3D shape")
         with gr.Column():
             image_output = gr.Image(interactive=False, label="Output RGB image")
             xyz_ouput = gr.Image(interactive=False, label="Output CCM image")

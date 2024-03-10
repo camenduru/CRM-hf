@@ -16,4 +16,4 @@ kiui
 trimesh
 xatlas
 ninja
-pymeshlab==0.2
+pymeshlab
