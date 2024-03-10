@@ -199,6 +199,7 @@ with gr.Blocks() as demo:
                 label="Output GLB",
                 interactive=False,
             )
+            gr.Markdown("Note: The GLB model shown here has a darker lighting and enlarged UV seams. Download for correct results.")
             output_obj = gr.File(interactive=False, label="Output OBJ")
 
     inputs = [
