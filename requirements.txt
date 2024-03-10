@@ -12,3 +12,4 @@ rembg
 git+https://github.com/NVlabs/nvdiffrast
 pygltflib
 kiui
+trimesh
