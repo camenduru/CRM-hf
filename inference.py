@@ -6,7 +6,11 @@ from util.utils import get_tri
 import tempfile
 from mesh import Mesh
 import zipfile
+from util.renderer import Renderer
 def generate3d(model, rgb, ccm, device):
+
+    model.renderer = Renderer(tet_grid_size=model.tet_grid_size, camera_angle_num=model.camera_angle_num,
+                                scale=model.input.scale, geo_type = model.geo_type)
 
     color_tri = torch.from_numpy(rgb)/255
     xyz_tri = torch.from_numpy(ccm[:,:,(2,1,0)])/255

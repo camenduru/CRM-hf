@@ -56,8 +56,8 @@ class CRM(nn.Module):
             
         self.sdfMlp = SdfMlp(mlp_chnl_s * 32, 512, bias=self.arch.mlp_bias) 
         self.rgbMlp = RgbMlp(mlp_chnl_s * 32, 512, bias=self.arch.mlp_bias)
-        self.renderer = Renderer(tet_grid_size=self.tet_grid_size, camera_angle_num=self.camera_angle_num,
-                                 scale=self.input.scale, geo_type = self.geo_type)
+        # self.renderer = Renderer(tet_grid_size=self.tet_grid_size, camera_angle_num=self.camera_angle_num,
+        #                          scale=self.input.scale, geo_type = self.geo_type)
 
 
         self.spob = True if specs['Pretrain']['mode'] is None else False  # whether to add sphere
