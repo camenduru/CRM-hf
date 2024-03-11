@@ -40,7 +40,7 @@ class UNetPP(nn.Module):
                 ),
             )
              
-        self.unet.enable_xformers_memory_efficient_attention()    
+        # self.unet.enable_xformers_memory_efficient_attention()    
         if in_channels > 12:
             self.learned_plane = torch.nn.parameter.Parameter(torch.zeros([1,in_channels-12,256,256*3]))
 
