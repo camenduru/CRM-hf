@@ -171,7 +171,7 @@ with gr.Blocks() as demo:
                         background_choice = gr.Radio([
                                 "Alpha as mask",
                                 "Auto Remove background"
-                            ], value="Alpha as mask",
+                            ], value="Auto Remove background",
                             label="backgroud choice")
                         # do_remove_background = gr.Checkbox(label=, value=True)
                         # force_remove = gr.Checkbox(label=, value=False)
@@ -192,6 +192,7 @@ with gr.Blocks() as demo:
             gr.Examples(
                 examples=[os.path.join("examples", i) for i in os.listdir("examples")],
                 inputs=[image_input],
+                examples_per_page = 20,
             )
         with gr.Column():
             image_output = gr.Image(interactive=False, label="Output RGB image")
@@ -201,7 +202,7 @@ with gr.Blocks() as demo:
                 label="Output OBJ",
                 interactive=False,
             )
-            gr.Markdown("Note: Use our official code to support higher resolution texture.")
+            gr.Markdown("Note: (1) Use our official code to support higher resolution texture. (2) Ensure that the image is correctly pre-processed into a grey background, otherwise the results will be unpredictable.")
 
     inputs = [
         processed_image,
