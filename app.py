@@ -187,7 +187,7 @@ with gr.Blocks() as demo:
                 with gr.Column():
                     seed = gr.Number(value=1234, label="seed", precision=0)
                     guidance_scale = gr.Number(value=5.5, minimum=3, maximum=10, label="guidance_scale")
-                    step = gr.Number(value=50, minimum=30, maximum=100, label="sample steps", precision=0)
+                    step = gr.Number(value=30, minimum=30, maximum=100, label="sample steps", precision=0)
             text_button = gr.Button("Generate 3D shape")
             gr.Examples(
                 examples=[os.path.join("examples", i) for i in os.listdir("examples")],
