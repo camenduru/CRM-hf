@@ -127,8 +127,9 @@ args = parser.parse_args()
 
 crm_path = hf_hub_download(repo_id="Zhengyi/CRM", filename="CRM.pth")
 specs = json.load(open("configs/specs_objaverse_total.json"))
-model = CRM(specs).to(args.device)
-model.load_state_dict(torch.load(crm_path), strict=False)
+model = CRM(specs)
+model.load_state_dict(torch.load(crm_path, map_location="cpu"), strict=False)
+model = model.to(args.device)
 
 stage1_config = OmegaConf.load(args.stage1_config).config
 stage2_config = OmegaConf.load(args.stage2_config).config
