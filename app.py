@@ -202,7 +202,7 @@ with gr.Blocks() as demo:
                 label="Output OBJ",
                 interactive=False,
             )
-            gr.Markdown("Note: (1) Use our official code to support higher resolution texture. (2) Ensure that the image is correctly pre-processed into a grey background, otherwise the results will be unpredictable.")
+            gr.Markdown("Note: Ensure that the input image is correctly pre-processed into a grey background, otherwise the results will be unpredictable.")
 
     inputs = [
         processed_image,
