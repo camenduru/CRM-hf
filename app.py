@@ -1,4 +1,5 @@
 # Not ready to use yet
+import spaces
 import argparse
 import numpy as np
 import gradio as gr
@@ -93,7 +94,7 @@ def preprocess_image(image, background_choice, foreground_ratio, backgroud_color
     image = add_background(image, backgroud_color)
     return image.convert("RGB")
 
-
+@spaces.GPU
 def gen_image(input_image, seed, scale, step):
     global pipeline, model, args
     pipeline.set_seed(seed)
