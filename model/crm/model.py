@@ -98,8 +98,12 @@ class CRM(nn.Module):
         # Expect predicted colors value range from [-1, 1]
         colors = (colors * 0.5 + 0.5).clip(0, 1)
 
-        verts = verts[..., [0, 2, 1]].squeeze().cpu().numpy()
-        faces = faces[..., [2, 1, 0]][..., [0, 2, 1]].squeeze().cpu().numpy()#faces[..., [2, 1, 0]].squeeze().cpu().numpy()
+        verts = verts[..., [0, 2, 1]]
+        verts[..., 0]*= -1
+        verts[..., 2]*= -1
+        verts = verts.squeeze().cpu().numpy()
+        faces = faces[..., [2, 1, 0]][..., [0, 2, 1]]#[..., [1, 0, 2]]
+        faces = faces.squeeze().cpu().numpy()#faces[..., [2, 1, 0]].squeeze().cpu().numpy()
 
         # export the final mesh
         with torch.no_grad():

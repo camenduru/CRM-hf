@@ -88,7 +88,7 @@ def preprocess_image(image, background_choice, foreground_ratio, backgroud_color
         background = Image.new("RGBA", image.size, (0, 0, 0, 0))
         image = Image.alpha_composite(background, image)
     else:
-        image = remove_background(image, rembg_session, force_remove=True)
+        image = remove_background(image, rembg_session, force=True)
     image = do_resize_content(image, foreground_ratio)
     image = expand_to_square(image)
     image = add_background(image, backgroud_color)
@@ -198,11 +198,10 @@ with gr.Blocks() as demo:
             xyz_ouput = gr.Image(interactive=False, label="Output CCM image")
 
             output_model = gr.Model3D(
-                label="Output GLB",
+                label="Output OBJ",
                 interactive=False,
             )
-            gr.Markdown("Note: The GLB model shown here has a darker lighting and enlarged UV seams. Download for correct results.")
-            # output_obj = gr.File(interactive=False, label="Output OBJ")
+            gr.Markdown("Note: Use our official code to support higher resolution texture.")
 
     inputs = [
         processed_image,
