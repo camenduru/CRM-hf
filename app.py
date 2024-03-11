@@ -150,7 +150,7 @@ pipeline = TwoStagePipeline(
     stage1_sampler_config,
     stage2_sampler_config,
     device=args.device,
-    dtype=torch.float16
+    dtype=torch.float32
 )
 
 with gr.Blocks() as demo:
