@@ -96,4 +96,4 @@ def generate3d(model, rgb, ccm, device):
     end_time = time.time()
     elapsed_time = end_time - start_time
     print(f"uv takes {elapsed_time}s")
-    return mesh_path_glb+".obj"
+    return mesh_path_glb+".glb"
