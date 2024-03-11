@@ -37,7 +37,7 @@ def generate3d(model, rgb, ccm, device):
     triplane = torch.cat([color,xyz],dim=1).to(device)
     # 3D visualize
     model.eval()
-    glctx = dr.RasterizeCudaContext()
+    glctx = dr.RasterizeGLContext()#dr.RasterizeCudaContext()
 
     if model.denoising == True:
         tnew = 20
