@@ -12,7 +12,7 @@ class Renderer(nn.Module):
         self.camera_angle_num = camera_angle_num
         self.scale = scale
         self.geo_type = geo_type
-        self.glctx = dr.RasterizeCudaContext()
+        # self.glctx = dr.RasterizeCudaContext()
 
         if self.geo_type == "flex":
             self.flexicubes = FlexiCubesGeometry(grid_res = self.tet_grid_size)   
