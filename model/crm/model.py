@@ -89,7 +89,7 @@ class CRM(nn.Module):
         _, verts, faces = self.renderer(data, pred_sdf, deformation, tet_verts, tet_indices, weight= weight)
         return verts[0].unsqueeze(0), faces[0].int()
 
-    def export_mesh(self, data, out_dir, ind, device=None, tri_fea_2 = None):
+    def export_mesh(self, data, out_dir, tri_fea_2 = None):
         verts = data['verts']
         faces = data['faces']
 
@@ -98,13 +98,13 @@ class CRM(nn.Module):
         # Expect predicted colors value range from [-1, 1]
         colors = (colors * 0.5 + 0.5).clip(0, 1)
 
-        verts = verts.squeeze().cpu().numpy()
-        faces = faces[..., [2, 1, 0]].squeeze().cpu().numpy()
+        verts = verts[..., [0, 2, 1]].squeeze().cpu().numpy()
+        faces = faces[..., [2, 1, 0]][..., [0, 2, 1]].squeeze().cpu().numpy()#faces[..., [2, 1, 0]].squeeze().cpu().numpy()
 
         # export the final mesh
         with torch.no_grad():
             mesh = trimesh.Trimesh(verts, faces, vertex_colors=colors, process=False) # important, process=True leads to seg fault...
-            mesh.export(out_dir / f'{ind}.obj')
+            mesh.export(f'{out_dir}.obj')
 
     def export_mesh_wt_uv(self, ctx, data, out_dir, ind, device, res, tri_fea_2=None):
 

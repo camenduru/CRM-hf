@@ -104,8 +104,8 @@ def gen_image(input_image, seed, scale, step):
     np_imgs = np.concatenate(stage1_images, 1)
     np_xyzs = np.concatenate(stage2_images, 1)
 
-    glb_path, obj_path = generate3d(model, np_imgs, np_xyzs, args.device)
-    return Image.fromarray(np_imgs), Image.fromarray(np_xyzs), glb_path, obj_path
+    glb_path = generate3d(model, np_imgs, np_xyzs, args.device)
+    return Image.fromarray(np_imgs), Image.fromarray(np_xyzs), glb_path#, obj_path
 
 
 parser = argparse.ArgumentParser()
@@ -202,7 +202,7 @@ with gr.Blocks() as demo:
                 interactive=False,
             )
             gr.Markdown("Note: The GLB model shown here has a darker lighting and enlarged UV seams. Download for correct results.")
-            output_obj = gr.File(interactive=False, label="Output OBJ")
+            # output_obj = gr.File(interactive=False, label="Output OBJ")
 
     inputs = [
         processed_image,
@@ -214,7 +214,7 @@ with gr.Blocks() as demo:
         image_output,
         xyz_ouput,
         output_model,
-        output_obj,
+        # output_obj,
     ]
 
 

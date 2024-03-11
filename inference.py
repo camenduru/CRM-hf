@@ -37,7 +37,7 @@ def generate3d(model, rgb, ccm, device):
     triplane = torch.cat([color,xyz],dim=1).to(device)
     # 3D visualize
     model.eval()
-    glctx = dr.RasterizeGLContext()#dr.RasterizeCudaContext()
+    
 
     if model.denoising == True:
         tnew = 20
@@ -67,29 +67,33 @@ def generate3d(model, rgb, ccm, device):
         
 
     from kiui.mesh_utils import clean_mesh
-    verts, faces = clean_mesh(data_config['verts'].squeeze().cpu().numpy().astype(np.float32), data_config['faces'].squeeze().cpu().numpy().astype(np.int32), repair = False, remesh=False, remesh_size=0.005)
+    verts, faces = clean_mesh(data_config['verts'].squeeze().cpu().numpy().astype(np.float32), data_config['faces'].squeeze().cpu().numpy().astype(np.int32), repair = False, remesh=True, remesh_size=0.005, remesh_iters=1)
     data_config['verts'] = torch.from_numpy(verts).cuda().contiguous()
     data_config['faces'] = torch.from_numpy(faces).cuda().contiguous()
 
     start_time = time.time()
     with torch.no_grad():
-        mesh_path_obj = tempfile.NamedTemporaryFile(suffix=f"", delete=False).name
-        model.export_mesh_wt_uv(glctx, data_config, mesh_path_obj, "", device, res=(1024,1024), tri_fea_2=triplane_feature2)
-
-        mesh = Mesh.load(mesh_path_obj+".obj", bound=0.9, front_dir="+z")
         mesh_path_glb = tempfile.NamedTemporaryFile(suffix=f"", delete=False).name
-        mesh.write(mesh_path_glb+".glb")
+        model.export_mesh(data_config, mesh_path_glb, tri_fea_2 = triplane_feature2)
 
-        # mesh_obj2 = trimesh.load(mesh_path_glb+".glb", file_type='glb')
-        # mesh_path_obj2 = tempfile.NamedTemporaryFile(suffix=f"", delete=False).name
-        # mesh_obj2.export(mesh_path_obj2+".obj")
+        # glctx = dr.RasterizeGLContext()#dr.RasterizeCudaContext()
+        # mesh_path_obj = tempfile.NamedTemporaryFile(suffix=f"", delete=False).name
+        # model.export_mesh_wt_uv(glctx, data_config, mesh_path_obj, "", device, res=(1024,1024), tri_fea_2=triplane_feature2)
 
-        with zipfile.ZipFile(mesh_path_obj+'.zip', 'w') as myzip:
-            myzip.write(mesh_path_obj+'.obj', mesh_path_obj.split("/")[-1]+'.obj')
-            myzip.write(mesh_path_obj+'.png', mesh_path_obj.split("/")[-1]+'.png')
-            myzip.write(mesh_path_obj+'.mtl', mesh_path_obj.split("/")[-1]+'.mtl')
+        # mesh = Mesh.load(mesh_path_obj+".obj", bound=0.9, front_dir="+z")
+        # mesh_path_glb = tempfile.NamedTemporaryFile(suffix=f"", delete=False).name
+        # mesh.write(mesh_path_glb+".glb")
+
+        # # mesh_obj2 = trimesh.load(mesh_path_glb+".glb", file_type='glb')
+        # # mesh_path_obj2 = tempfile.NamedTemporaryFile(suffix=f"", delete=False).name
+        # # mesh_obj2.export(mesh_path_obj2+".obj")
+
+        # with zipfile.ZipFile(mesh_path_obj+'.zip', 'w') as myzip:
+        #     myzip.write(mesh_path_obj+'.obj', mesh_path_obj.split("/")[-1]+'.obj')
+        #     myzip.write(mesh_path_obj+'.png', mesh_path_obj.split("/")[-1]+'.png')
+        #     myzip.write(mesh_path_obj+'.mtl', mesh_path_obj.split("/")[-1]+'.mtl')
 
     end_time = time.time()
     elapsed_time = end_time - start_time
     print(f"uv takes {elapsed_time}s")
-    return mesh_path_glb+".glb", mesh_path_obj+'.zip'
+    return mesh_path_glb+".obj"
